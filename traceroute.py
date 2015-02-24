@@ -18,8 +18,8 @@ def main (dest_name):
 
     ttl = 1
     port = 33434
-    blocksize = 1024
-    max_hops = 3
+    blocksize = 512
+    max_hops = 64
 
     print "traceroute to " + dest_name + " (" + dest_addr + "), " + str(max_hops) + " hops max, " + str(blocksize) + " byte packets"
 
@@ -51,8 +51,8 @@ def main (dest_name):
             recv_socket.close()
 
         if curr_addr != None:
-            print "send time " + str(send_time) + " recv time: " + str(recv_time)
-            print str(ttl) + " " + curr_hostname + " (" + curr_addr + ")"
+            roundTripTime = round((recv_time - send_time)*1000, 3)
+            print str(ttl) + " " + curr_hostname + " (" + curr_addr + ") " + str(roundTripTime) + " ms"
 
         ttl += 1
         
