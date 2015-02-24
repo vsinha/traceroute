@@ -3,7 +3,15 @@
 import socket
 
 def main (dest_name):
-    dest_addr = socket.gethostbyname(dest_name)
+    hostname, aliaslist, ipaddrlist  = socket.gethostbyname_ex(dest_name)
+
+    if len(ipaddrlist) >= 1:
+        dest_addr = ipaddrlist[0]
+        print "traceroute: Warning: " + dest_name + " has multiple addresses; using " + dest_addr
+    elif len(ipaddrlist) == 0:
+        print "traceroute: unknown host" + dest_name
+        return
+
     icmp = socket.getprotobyname('icmp')
     udp = socket.getprotobyname('udp')
 
@@ -11,6 +19,8 @@ def main (dest_name):
     port = 33434
     blocksize = 52
     max_hops = 64
+
+    print "traceroute to " + dest_name + " (" + dest_addr + "), " + str(max_hops) + " hops max, " + str(blocksize) + " byte packets"
 
     while True:
         # open sending and receiving connections
@@ -41,7 +51,6 @@ def main (dest_name):
             print str(ttl) + " " + curr_hostname + " (" + curr_addr + ")"
 
         ttl += 1
-
         
         if curr_addr == dest_addr or ttl > max_hops:
             break
